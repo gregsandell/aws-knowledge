@@ -30,6 +30,26 @@
       "Effect": "Allow",
       "Action": "iam:ListUserPolicies",
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateGroup",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteGroup",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "*"
     }
   ]
 }

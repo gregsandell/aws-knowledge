@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Create an IAM Group and attach existing managed policies (passed as parameters)
+  plus a small custom managed policy attached to the group.
+
+Parameters:
+  GroupName:
+    Type: String
+    Default: devs
+    Description: Name of the IAM Group to create
+
+  ManagedPolicyArns:
+    Type: CommaDelimitedList
+    Default: arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+    Description: >
+      Comma-separated list of existing managed policy ARNs to attach to the group
+      (example: arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess)
+
+Resources:
+  DevsGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Ref GroupName
+      # We attach the passed managed policies directly to the Group
+      ManagedPolicyArns: !Ref ManagedPolicyArns
+
+  # Create a small custom managed policy and attach it to the group
+  GroupCustomManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${GroupName}-CustomReadPolicy'
+      Description: 'Custom read-only policy for a specific resource (example)'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowListSpecificBucket
+            Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource:
+              - arn:aws:s3:::example-bucket
+          - Sid: AllowGetObjectsInThatBucket
+            Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:aws:s3:::example-bucket/*
+
+      # Attach this managed policy to the group we created
+      Groups:
+        - !Ref DevsGroup
+
+Outputs:
+  GroupName:
+    Description: Name of the created group
+    Value: !Ref GroupName
+
+  CustomManagedPolicyArn:
+    Description: ARN of the custom managed policy created by the stack
+    Value: !Ref GroupCustomManagedPolicy
