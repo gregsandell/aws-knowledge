@@ -13,6 +13,11 @@
     },
     {
       "Effect": "Allow",
+      "Action": "iam:GetPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": "iam:GetUser",
       "Resource": "*"
     },
@@ -49,6 +54,26 @@
     {
       "Effect": "Allow",
       "Action": "iam:ListGroupsForUser",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:AttachGroupPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListGroupPolicies",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DetachGroupPolicy",
       "Resource": "*"
     }
   ]

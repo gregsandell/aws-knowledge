@@ -1,0 +1,66 @@
+AWS CLI IAM Permissions Cheat Sheet
+
+Viewing IAM Users and Policies
+
+-   List attached user policies: aws iam list-attached-user-policies
+    –user-name
+
+-   List inline user policies: aws iam list-user-policies –user-name
+
+-   View inline user policy: aws iam get-user-policy –user-name
+    –policy-name
+
+-   View user details: aws iam get-user –user-name
+
+IAM Groups
+
+-   List attached group policies: aws iam list-attached-group-policies
+    –group-name
+
+-   List inline group policies: aws iam list-group-policies –group-name
+
+IAM Roles
+
+-   Get role details: aws iam get-role –role-name
+
+-   List attached role policies: aws iam list-attached-role-policies
+    –role-name
+
+-   List inline role policies: aws iam list-role-policies –role-name
+
+-   View inline role policy: aws iam get-role-policy –role-name
+    –policy-name
+
+Managed Policies
+
+-   Get policy metadata: aws iam get-policy –policy-arn
+
+-   Get managed policy JSON: aws iam get-policy-version –policy-arn
+    –version-id
+
+-   List policy versions: aws iam list-policy-versions –policy-arn
+
+Applying or Modifying Permissions
+
+-   Attach policy to user: aws iam attach-user-policy –user-name
+    –policy-arn
+
+-   Attach policy to role: aws iam attach-role-policy –role-name
+    –policy-arn
+
+-   Add/replace inline policy for user: aws iam put-user-policy
+    –user-name –policy-name –policy-document file://policy.json
+
+-   Add inline policy to role: aws iam put-role-policy –role-name
+    –policy-name –policy-document file://policy.json
+
+-   Delete inline user policy: aws iam delete-user-policy –user-name
+    –policy-name
+
+Debugging Permissions
+
+-   Check if user has a permissions boundary: aws iam get-user
+    –user-name –query ‘User.PermissionsBoundary’
+
+-   Simulate permissions: aws iam simulate-principal-policy
+    –policy-source-arn arn:aws:iam:::user/ –action-names

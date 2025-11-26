@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  Creates an IAM Group for application developers and attaches a default set
+  of AWS Managed Policies appropriate for Console + CLI developer tasks.
+  Edit the ManagedPolicyArns parameter to add/remove managed policies.
+
+Parameters:
+  GroupName:
+    Type: String
+    Default: DevApplicationsGroup
+    Description: Name of the IAM Group to create.
+
+  ManagedPolicyArns:
+    Type: CommaDelimitedList
+    Description: >
+      Comma-separated list of AWS managed policy ARNs to attach to the group.
+      You can keep the defaults or supply your own ARNs.
+    Default: |
+      arn:aws:iam::aws:policy/PowerUserAccess,
+      arn:aws:iam::aws:policy/IAMReadOnlyAccess,
+      arn:aws:iam::aws:policy/AmazonS3FullAccess,
+      arn:aws:iam::aws:policy/CloudWatchFullAccess,
+      arn:aws:iam::aws:policy/AmazonRDSFullAccess
+
+Resources:
+  DevGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Ref GroupName
+      ManagedPolicyArns: !Ref ManagedPolicyArns
+      # You may optionally add an inline group policy here for any extra
+      # narrowly-scoped permissions if desired.
+
+Outputs:
+  GroupName:
+    Description: Name of the created IAM Group
+    Value: !Ref DevGroup
+
+  GroupId:
+    Description: ARN of the created IAM Group
+    Value: !GetAtt DevGroup.Arn
+
+  AttachedManagedPolicies:
+    Description: The managed policy ARNs attached to the group (as provided)
+    Value: !Join [",", !Ref ManagedPolicyArns]
