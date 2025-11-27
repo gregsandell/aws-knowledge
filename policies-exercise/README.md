@@ -30,23 +30,26 @@ These requirements should be satisfied:
 3. Create an IAM group named _aws-cli-capabilities_ and add user gjsWebsiteAdmin to this group.
 
 # Exercise One
+Folder: _inline-policies_
 ## Exercise One steps
 1. Create all the policies in the _inline-policies_ folder by adding each individually to the group _aws-cli-capabilities_ through the _Permissions_ tab. Do this by copying the
 full JSON content of each policy file and pasting it into the JSON editor
-for the Add permissions > Create inline policy workflow
+for the Add permissions > Create inline policy workflow.  You do this once
+for each of the polic files in the folder.
 2. Run the script _testscript-inline-policies.sh_ in the terminal while logged in as user gjsWebsiteAdmin.
 3. The script is successful if it completes with no output.  Otherwise, there
 will be error messages for each command that failed.
 
 ## Cleanup after Exercise One
 This is needed to prep for Exercise Two.
-1. Detach all six policies from the group _aws-cli-capabilities_.
+1. Detach all eleven policies from the group _aws-cli-capabilities_.
 2. Delete the IAM Group _testscript-temp-group_ if it exists.
 2. Do **not** detach the policy _ListAccessKeys_attached-to-user_ from user _gjsWebsiteAdmin_.
 
-Exercise Two will show how the same policies as Exercise One can be entered into a single file and attached to an entity, eliminating the tedium of doing one policy at a time.
+**Exercise Two** will show how the same policies as Exercise One can be entered into a single file and attached to an entity, eliminating the tedium of doing one policy at a time.
 
 # Exercise Two
+Folder: same as Exercise One: _inline-policies_
 ## Exercise Two steps
 1. _all_inline_policies.json_ is already made for you.  Attach it to the group _aws-cli-capabilities_, using the 
 same workflow as above.
@@ -64,6 +67,7 @@ policies that work for actions that work **only** with Customer-Managed Policies
 These additional polices are in the `customer-managed-policies` folder.
 
 # Exercise Three
+Folder: _customer-managed-policies_
 ## Exercise Three steps
 1. _all_customer_managed_policies.json_ is already made for you.  On the AWS IAM page in the
 AWS Console, select _Policies_ from the left rail.  Press _Create Policy_.
@@ -81,10 +85,6 @@ AWS Console, select _Policies_ from the left rail.  Press _Create Policy_.
   _list-group-policies_, _delete-group-policy_, _list-attached-group-policies_, _get-group_, _remove-user-from-group_, and _delete-group_.
 * The scripts mentioned in these exercises assume your AWS CLI session is logged in with user `gjsWebsiteAdmin`.
 
-## my-default-policy
-The _all_inline_policies.json_ list of policy statements is intended to be my default list for my "real" work.
-
-This is the list that I continually update as I discover more and policies I need.
-
-The policy lists, on the other hand, will remain mostly static and should be used for 
-tutorial purposes only.
+## For a permanent set of policies
+See the `starter-cloudformations/application-developers` CloudFormation template
+that creates an IAM Group with a sensible set of AWS managed policies suitable for application developers.
