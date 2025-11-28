@@ -85,6 +85,11 @@
       "Effect": "Allow",
       "Action": "iam:PutGroupPolicy",
       "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteGroupPolicy",
+      "Resource": "*"
     }
   ]
 }
