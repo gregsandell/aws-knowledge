@@ -30,6 +30,48 @@ Resources:
       ManagedPolicyArns: !Ref ManagedPolicyArns
       # You may optionally add an inline group policy here for any extra
       # narrowly-scoped permissions if desired.
+      Policies:
+        - PolicyName: AllowListGroupsForUser
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:ListGroupsForUser
+                Resource: "*"
+        - PolicyName: AllowCreateGroup
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:CreateGroup
+                Resource: "*"
+        - PolicyName: AllowGetGroup
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:GetGroup
+                Resource: "*"
+        - PolicyName: AllowDeleteGroup
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:DeleteGroup
+                Resource: "*"
+        - PolicyName: AllowListGroupPolicies
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:ListGroupPolicies
+                Resource: "*"
+
 
 Outputs:
   GroupName:

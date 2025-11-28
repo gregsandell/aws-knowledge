@@ -43,6 +43,11 @@
     },
     {
       "Effect": "Allow",
+      "Action": "iam:GetGroupPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": "iam:CreateGroup",
       "Resource": "*"
     },
@@ -74,6 +79,11 @@
     {
       "Effect": "Allow",
       "Action": "iam:DetachGroupPolicy",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:PutGroupPolicy",
       "Resource": "*"
     }
   ]
