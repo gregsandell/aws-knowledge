@@ -48,7 +48,7 @@ if [ $? -ne 0 ]; then
   echo "Failed create-group"
 fi
 
-# TODO Create necessary resources and edit the test below to get it working
+# Note: put-group-policy adds an inline policy (i.e. not Customer Managed Policy) to the named group.
 aws iam put-group-policy \
   --group-name $TEMP_GROUP \
   --policy-name AllowListGroupsForUser \
@@ -60,6 +60,7 @@ if [ $? -ne 0 ]; then
   echo "Failed put-group-policy"
 fi
 
+# delete-group-policy removes an inline policy (i.e. not Customer Managed Policy) from the named group.
 aws iam delete-group-policy \
   --group-name $TEMP_GROUP \
   --policy-name AllowListGroupsForUser
@@ -84,10 +85,7 @@ fi
 
 
 
-# TODO Create necessary resources and edit the test below to get it working
-# Probably need to add put-group-policy policy first
-# Then create a throwaway policy to attach to the group for testing
-# Then probably add a delete-policy policy, then delete the throwaway policy after testing
+# detach-group-policy is for detaching a Customer Managed Policy (i.e. not an Inline Policy) from a group.
 #aws iam detach-group-policy \
 #    --group-name MyDeveloperGroup \
 #    --policy-arn arn:aws:iam::aws:policy/PowerUserAccess
