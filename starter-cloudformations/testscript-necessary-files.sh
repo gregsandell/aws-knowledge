@@ -7,7 +7,7 @@
 
 STARTER_POLICY=arn:aws:iam::975720571991:policy/starter-policies # Must be pre-existing
 GJS_USER=gjsWebsiteAdmin # Must be pre-existing
-CLI_CAPABIILITIES_GROUP=aws-cli-capabilities # Must be pre-existing
+CLI_CAPABILITIES_GROUP=aws-cli-capabilities # Must be pre-existing
 TEMP_GROUP=testscript-temp-group # Created and deleted in this script
 
 aws iam list-groups-for-user --user-name $GJS_USER > /dev/null
@@ -31,7 +31,7 @@ fi
 if [ $? -ne 0 ]; then
   echo "Failed get-user"
 fi
-  aws iam get-group --group-name $CLI_CAPABIILITIES_GROUP  > /dev/null
+  aws iam get-group --group-name $CLI_CAPABILITIES_GROUP  > /dev/null
 if [ $? -ne 0 ]; then
   echo "Failed get-group"
 fi
@@ -74,11 +74,11 @@ if [ $? -ne 0 ]; then
   echo "Failed delete-group"
 fi
 
-aws iam list-attached-group-policies --group-name $CLI_CAPABIILITIES_GROUP > /dev/null
+aws iam list-attached-group-policies --group-name $CLI_CAPABILITIES_GROUP > /dev/null
 if [ $? -ne 0 ]; then
   echo "Failed list-attached-group-policies"
 fi
-aws iam list-group-policies --group-name $CLI_CAPABIILITIES_GROUP > /dev/null
+aws iam list-group-policies --group-name $CLI_CAPABILITIES_GROUP > /dev/null
 if [ $? -ne 0 ]; then
   echo "Failed list-group-policies"
 fi

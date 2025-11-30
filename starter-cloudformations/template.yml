@@ -17,10 +17,7 @@ Parameters:
       You can keep the defaults or supply your own ARNs.
     Default: |
       arn:aws:iam::aws:policy/PowerUserAccess,
-      arn:aws:iam::aws:policy/IAMReadOnlyAccess,
-      arn:aws:iam::aws:policy/AmazonS3FullAccess,
-      arn:aws:iam::aws:policy/CloudWatchFullAccess,
-      arn:aws:iam::aws:policy/AmazonRDSFullAccess
+      arn:aws:iam::aws:policy/IAMReadOnlyAccess
 
 Resources:
   DevGroup:
@@ -70,6 +67,22 @@ Resources:
               - Effect: Allow
                 Action:
                   - iam:ListGroupPolicies
+                Resource: "*"
+        - PolicyName: AllowPutGroupPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:PutGroupPolicy
+                Resource: "*"
+        - PolicyName: AllowDeleteGroupPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:DeleteGroupPolicy
                 Resource: "*"
 
 
