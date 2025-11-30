@@ -68,14 +68,16 @@ These additional polices are in the `customer-managed-policies` folder.
 
 # Exercise Three
 Folder: _customer-managed-policies_
+
+This is an exercise in creating Customer-Managed Policies as opposed to Inline Policies.
 ## Exercise Three steps
-1. _all_customer_managed_policies.json_ is already made for you.  On the AWS IAM page in the
+1. _customer_managed_policies.json_ is already made for you.  On the AWS IAM page in the
 AWS Console, select _Policies_ from the left rail.  Press _Create Policy_.
 2. In _Select a Service_, choose `IAM`.
 3. In _Policy Editor_, press _JSON_ and overwrite the contents with the contents of _all_customer_managed_policies.json_. Press _Next_.
 4. in the _Policy Details_ field, give it the name `_`all-the-customer-managed-policies` and press _Create_.
-5. Notice that by typing `all` into the search field, that our new policy appears as one of the policies.
-6. Go to the IAM User Group _aws-cli-capabilites_, _Permissions_ tab, press _Add Permission_ with the _Attach Policies_ choice.
+5. Once it's created, notice that by typing `all` into the search field, that our new policy appears as one of the policies.
+6. Go to the IAM User Group _aws-cli-capabilites_, _Permissions_ tab, press _Add Permission_ with the **_Attach Policies_ choice**.
 7. Find our policy using the approach in step 5, check its box and click _Attach Policies_.
 2. Run the script _testscript-customer-managed-policies.sh_ in the `customer-managed-policies` folder and expect the same outcomes as before.
 

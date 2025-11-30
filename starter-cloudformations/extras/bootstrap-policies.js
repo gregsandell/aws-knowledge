@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * This code came from an AI request to translate create-starter-policy.sh to node.js.
+ * This code came from an AI request to translate bootstrap-policies.sh to node.js.
  */
 /**
  *

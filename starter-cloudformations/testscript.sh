@@ -1,4 +1,6 @@
 #! /bin/bash
+# This script serves as the testscript for both (1) the bootstrapped policies and (2) the
+# starter-cloudformations stack.
 # TODO Rewrite this using variables and loop
 #
 # The purpose of this script is to test that a number of AWS actions/commands are permitted

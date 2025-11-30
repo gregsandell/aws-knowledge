@@ -33,11 +33,8 @@ cannot yet create the target cloudFormation stack.  Next we create some "bootstr
 * Give _aws-cli-capabilities_ temporary superpowers by attaching the _AdministratorAccess_ Customer Managed policy
 attach it to the group _aws-cli-capabilities_.  These powers bootstrap the ability to create the CloudFormation stack,
 which will in turn create the more limited policies needed for day-to-day operations.
-* Confirm this step by running the script _testscript-necessary-policies.sh_ which checks that the user _gjsWebsiteAdmin_ can run all of the commands that will be needed in the CloudFormation template.
-
-## move this somewhere else 
-  * The script _create-starter-policy.sh_ will
-do all of that for you
+ * The script _bootstrap-policies.sh_ will do all of that for you
+* Confirm this step by running the script _testscript.sh_ which checks that the user _gjsWebsiteAdmin_ can run all of the commands that will be needed in the CloudFormation template.
 
 ## Create the Stack 'dev-group-stack' and Group 'DevApplicationsGroup'
 Use AWS Console or AWS CLI to create a CloudFormation stack called _dev-group-stack_ using the _template.yml_ file in this folder.
