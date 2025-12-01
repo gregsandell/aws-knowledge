@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >-
+  SAM app: Hello Lambda + HTTP API v2 with an explicit named 'prod' stage.
+  Use the DeploymentTimestamp parameter to force a new deployment on updates.
+
+Parameters:
+  DeploymentTimestamp:
+    Type: String
+    Description: "Timestamp (e.g. 2025-12-01T18:00:00Z). Change this to force a new deployment."
+    Default: ""
+
+Resources:
+  # Lambda function (SAM creates the execution role automatically)
+  HelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: hello-sam-explicit-function
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Timeout: 10
+      InlineCode: |
+        exports.handler = async (event) => {
+          const body = {
+            message: "Hello, World!",
+            ts: new Date().toISOString(),
+            method: event.requestContext?.http?.method,
+            path: event.requestContext?.http?.path
+          };
+          return {
+            statusCode: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*"   # useful for browser fetch()
+            },
+            body: JSON.stringify(body)
+          };
+        };
+
+  # API Gateway (HTTP API v2)
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: HelloHttpApiExplicit
+      ProtocolType: HTTP
+
+  # Integration connecting HttpApi -> Lambda
+  LambdaIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HelloFunction.Arn}/invocations
+      PayloadFormatVersion: "2.0"
+
+  # Route: matches GET and POST on /hello
+  HelloRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: "ANY /hello"
+      Target: !Sub "integrations/${LambdaIntegration}"
+
+  # Deployment: snapshot of API configuration. Description includes timestamp param to force new resource when changed.
+  ApiDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn: HelloRoute
+    Properties:
+      ApiId: !Ref HttpApi
+      Description: !Sub "Deployment triggered at ${DeploymentTimestamp}"
+  # Stage: named 'prod' that points to the deployment (AutoDeploy is false to show explicit control)
+  ApiStageProd:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: prod
+      DeploymentId: !Ref ApiDeployment
+      AutoDeploy: false
+      Description: "Explicit prod stage"
+
+  # Permission so API Gateway can invoke Lambda (restricted to the prod stage path)
+  PermissionForApiToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref HelloFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      # limit source to the prod stage
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/prod/*/hello"
+
+Outputs:
+  ApiEndpoint:
+    Description: "HTTP API prod endpoint for /hello"
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com/prod/hello"
+    Export:
+      Name: HelloApiEndpoint

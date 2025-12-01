@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Hello World Lambda + API Gateway (HTTP API) using SAM
+
+Resources:
+  HelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: hello-sam-function
+      Handler: index.handler
+      Runtime: nodejs18.x
+      InlineCode: |
+        exports.handler = async (event) => {
+          // simple response
+          const body = { message: "Hello, World!", receivedAt: new Date().toISOString(), eventSummary: { method: event.requestContext?.http?.method, path: event.requestContext?.http?.path } };
+          return {
+            statusCode: 200,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          };
+        };
+      Events:
+        HelloApi:
+          Type: HttpApi
+          Properties:
+            Path: /hello
+            Method: ANY
