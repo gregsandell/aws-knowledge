@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Example: two Lambda tasks wired into a Step Functions state machine (sequential).
+Parameters:
+  DeploymentTimestamp:
+    Type: String
+    Default: ""
+
+Resources:
+  # Lambda A
+  LambdaA:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lambda-a
+      Runtime: nodejs18.x
+      Handler: index.handler
+      CodeUri: lambda-a/    # directory containing lambda-a/index.js and package.json (if any)
+
+  # Lambda B
+  LambdaB:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lambda-b
+      Runtime: nodejs18.x
+      Handler: index.handler
+      CodeUri: lambda-b/    # directory containing lambda-b/index.js
+
+  # IAM role for Step Functions (must be able to invoke both lambdas)
+  StepFunctionsExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: StepFunctionsInvokeLambdasRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - states.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: InvokeLambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                  - lambda:InvokeAsync
+                Resource:
+                  - !GetAtt LambdaA.Arn
+                  - !GetAtt LambdaB.Arn
+
+  # State machine definition (ASL JSON). Uses Lambda Invoke integration (synchronous).
+  MyStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: two-lambda-sequence
+      RoleArn: !GetAtt StepFunctionsExecutionRole.Arn
+      DefinitionString: !Sub |
+        {
+          "Comment": "Invoke LambdaA then LambdaB, passing outputs.",
+          "StartAt": "InvokeLambdaA",
+          "States": {
+            "InvokeLambdaA": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "${LambdaA.Arn}",
+                "Payload.$": "$" 
+              },
+              "ResultPath": "$.lambdaAResult",
+              "Next": "InvokeLambdaB"
+            },
+            "InvokeLambdaB": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "FunctionName": "${LambdaB.Arn}",
+              "Payload": {
+                "numberFromA.$": "$.lambdaAResult.Payload.number",
+                "input.$": "$"
+              },
+              "ResultPath": "$.lambdaBResult",
+              "End": true
+            }
+          }
+        }
+
+Outputs:
+  StateMachineArn:
+    Description: "State Machine ARN"
+    Value: !Ref MyStateMachine
+  LambdaAName:
+    Value: !Ref LambdaA
+  LambdaBName:
+    Value: !Ref LambdaB
