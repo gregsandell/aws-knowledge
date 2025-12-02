@@ -59,7 +59,7 @@ When I ran it:
    }
 }
 ```      
-## Summary of moving parts
+## Summary of resources
 * The lambda function
   * which is given a permission and a role
 * An ServerlessHttpApi
