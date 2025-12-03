@@ -1,0 +1,33 @@
+MyRestApi:
+  Type: AWS::ApiGateway::RestApi
+  Properties:
+    Name: MyStepFunctionsApi
+
+MyResource:
+  Type: AWS::ApiGateway::Resource
+  Properties:
+    RestApiId: !Ref MyRestApi
+    ParentId: !GetAtt MyRestApi.RootResourceId
+    PathPart: start
+
+MyMethod:
+  Type: AWS::ApiGateway::Method
+  Properties:
+    RestApiId: !Ref MyRestApi
+    ResourceId: !Ref MyResource
+    HttpMethod: POST
+    AuthorizationType: NONE   # or AWS_IAM, CUSTOM, COGNITO_USER_POOLS
+    Integration:
+      Type: AWS
+      IntegrationHttpMethod: POST
+      Uri: arn:aws:apigateway:us-west-2:states:action/StartExecution
+      Credentials: !GetAtt ApiGatewayStepFunctionsRole.Arn
+      RequestTemplates:
+        application/json: |
+          #set($inputRoot = $input.path('$'))
+          {
+            "input": "$util.escapeJavaScript($input.body)",
+            "stateMachineArn": "arn:aws:states:us-west-2:123456789012:stateMachine:my-step-function"
+          }
+    MethodResponses:
+      - StatusCode: 200

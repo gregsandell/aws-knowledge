@@ -1,0 +1,22 @@
+ApiGatewayStepFunctionsRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: ApiGatewayStepFunctionsRole
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+              - apigateway.amazonaws.com
+          Action:
+            - sts:AssumeRole
+    Policies:
+      - PolicyName: AllowStepFunctionsStartExecution
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - states:StartExecution
+              Resource: arn:aws:states:us-west-2:123456789012:stateMachine:my-step-function
