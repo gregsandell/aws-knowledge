@@ -1,7 +1,5 @@
 # two-lambda-step-function
 
-> Note: This exercise has not yet been implemented.
-
 **Goal**: 
 * lambdas 1 & 2 run in sequence in a step function
 * lambda 1 produces output which is passed as input to lambda 2
@@ -40,7 +38,7 @@ lambda-a will produce:
 1. Build and deploy:
 ```bash
 sam build
-sam deploy --guided
+sam deploy --guided --capabilities CAPABILITY_NAMED_IAM
 ```
 Enter stack name, region, allow IAM creation, and optionally set `DeploymentTimestamp` if you use it for forcing deployments.
 2. After deployment you’ll get the State Machine ARN in outputs. Start an execution:

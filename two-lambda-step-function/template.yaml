@@ -59,36 +59,39 @@ Resources:
     Properties:
       StateMachineName: two-lambda-sequence
       RoleArn: !GetAtt StepFunctionsExecutionRole.Arn
-      DefinitionString: !Sub |
-        {
-          "Comment": "Invoke LambdaA then LambdaB, passing outputs.",
-          "StartAt": "InvokeLambdaA",
-          "States": {
-            "InvokeLambdaA": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::lambda:invoke",
-              "Parameters": {
-                "FunctionName": "${LambdaA.Arn}",
-                "Payload.$": "$" 
+      DefinitionString: !Sub
+        - |
+          {
+            "Comment": "Invoke LambdaA then LambdaB, passing outputs.",
+            "StartAt": "InvokeLambdaA",
+            "States": {
+              "InvokeLambdaA": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "Parameters": {
+                  "FunctionName": "${LambdaA.Arn}",
+                  "Payload.$": "$"
+                },
+                "ResultPath": "$.lambdaAResult",
+                "Next": "InvokeLambdaB"
               },
-              "ResultPath": "$.lambdaAResult",
-              "Next": "InvokeLambdaB"
-            },
-            "InvokeLambdaB": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::lambda:invoke",
-              "Parameters": {
-                "FunctionName": "${LambdaB.Arn}",
-              "Payload": {
-                "numberFromA.$": "$.lambdaAResult.Payload.number",
-                "input.$": "$"
-              },
-              "ResultPath": "$.lambdaBResult",
-              "End": true
+              "InvokeLambdaB": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::lambda:invoke",
+                "Parameters": {
+                  "FunctionName": "${LambdaB.Arn}",
+                  "Payload": {
+                    "numberFromA.$": "$.lambdaAResult.Payload.number",
+                    "input.$": "$"
+                  }
+                },
+                "ResultPath": "$.lambdaBResult",
+                "End": true
+              }
             }
           }
-        }
-
+        - LambdaAArn: !GetAtt LambdaA.Arn
+          LambdaBArn: !GetAtt LambdaB.Arn
 Outputs:
   StateMachineArn:
     Description: "State Machine ARN"
